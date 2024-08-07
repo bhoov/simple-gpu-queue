@@ -1,0 +1,8 @@
+name: simple-gpu-queue
+channels:
+  - conda-forge
+  - anaconda
+dependencies:
+  - python=3.10
+  - pip>=20.0
+  - ipykernel
