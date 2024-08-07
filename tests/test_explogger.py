@@ -1,7 +1,7 @@
 import pytest
 import json
 import pandas as pd
-from explogger import ExpLogger
+from simple_gpu_queue.explogger import ExpLogger
 import git
 
 @pytest.fixture

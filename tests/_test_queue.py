@@ -1,4 +1,4 @@
-from simple_gpu_queue import GPUQueueClient
+from simple_gpu_queue.simple_gpu_queue import GPUQueueClient
 queue = GPUQueueClient(git_commit_id="most_recent")
 
 # Send commands as a list of (command, stdout_file) tuples. Stdoutfile can be "" for no saving of stdout logging.
