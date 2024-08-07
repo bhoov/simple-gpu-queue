@@ -20,12 +20,7 @@ commands = [
     ("python -c 'import time; import jax.numpy as jnp; a=jnp.ones(5); time.sleep(3); print(\"I SLEPT HAPPY 3\")'", "testlogs/v3.txt"),
 ]
 
-if queue.git_repo.is_dirty():
-    user_input = input("Repo has uncommitted changes: continue? [Y/n] ").strip().lower()
-    if user_input == 'n':
-        raise ValueError("Aborting due to uncommitted changes in the repository.") 
-
-queue.send_command_list(cmd_tuples)
+queue.send_command_list(cmd_tuples, check_git_clean=True)
 ```
 
 Kill the server with
@@ -60,14 +55,14 @@ from urllib3.exceptions import NewConnectionError
 from requests.exceptions import ConnectionError
 import os
 
-GPU_SERVER_HOST = "0.0.0.0"
-GPU_SERVER_PORT = 5034
+HOST = "0.0.0.0"
+PORT = 5034
 
 class CommandMessage(BaseModel):
     command: str = f""" python -c "import time; time.sleep(1); print('I SLEPT HAPPY')" """
     stdout_file: str = ""
-    EXPLOGGER_ROOT: str = str(Path.cwd())
-    EXPLOGGER_GITDIR: str = str(Path.cwd())
+    EXPLOGGER_ROOT: str = str(Path.cwd()) # Linked to logging
+    EXPLOGGER_GITDIR: str = str(Path.cwd()) # Linked to logging
     working_dir: str = str(Path.cwd())
 
 class GPUQueueServer:
@@ -249,7 +244,7 @@ class GPUQueueServer:
         return True
 
     def run(self):
-        uvicorn.run(self.app, host=GPU_SERVER_HOST, port=GPU_SERVER_PORT)
+        uvicorn.run(self.app, host=HOST, port=PORT)
 
     def __del__(self):
         print("Cleaning up GPUQueueServer...")
@@ -262,7 +257,7 @@ class GPUQueueClient:
         self.git_repo = git.Repo(git_repo_path, search_parent_directories=True)
         self.git_repo_dir = Path(self.git_repo.git_dir).parent
         self.git_commit_id = self.get_commit_id(git_commit_id)
-        self.server_url = f"http://{GPU_SERVER_HOST}:{GPU_SERVER_PORT}"
+        self.server_url = f"http://{HOST}:{PORT}"
         self.temp_dir = None
         self.setup_environment()
         assert self.is_server_running(), f"""Server is not running. You can start the server by running `python simple_gpu_queue.py NGPUS`"""
@@ -302,8 +297,13 @@ class GPUQueueClient:
         if response.status_code != 200:
             print(f"Error sending command: {response.text}")
 
-    def send_command_list(self, cmds: List[Tuple[str, str]]):
+    def send_command_list(self, cmds: List[Tuple[str, str]], check_git_clean: bool = True):
         messages = [self.command_to_message(cmd).model_dump() for cmd in cmds]
+        if check_git_clean and queue.git_repo.is_dirty():
+            user_input = input("Repo has uncommitted changes: continue? [Y/n] ").strip().lower()
+            if user_input == 'n':
+                raise ValueError("Aborting due to uncommitted changes in the repository.") 
+
         response = requests.post(f"{self.server_url}/enqueue", json=messages)
         if response.status_code != 200:
             print(f"Error sending command: {response.text}")
