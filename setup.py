@@ -5,7 +5,7 @@ with open("requirements.txt") as f:
 
 setup(
     name="simple_gpu_queue",
-    version="0.1.0",
+    version="0.1.1",
     packages=find_packages(),
     install_requires=requirements,
     author="Ben Hoover",
@@ -21,7 +21,7 @@ setup(
     ],
     entry_points={
     'console_scripts': [
-        'simpleq_start=scripts:start_server',
+        'simpleq_start=simple_gpu_queue.scripts:start_server',
     ],
     }, # Doesn't let me pass args. Bummer   python_requires=">=3.6",
 )

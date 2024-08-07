@@ -42,3 +42,9 @@ pip install -r requirements.txt
 ```
 
 Check the server is running, navigate to `http://localhost:5034/docs`, test the routes
+
+## Upload to pypi (reference)
+```
+python setup.py sdist bdist_wheel
+twine upload dist/*
+```
