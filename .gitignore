@@ -1,3 +1,4 @@
 testlogs
 __pycache__
 .pytest_cache
+simple_gpu_queue.egg-info

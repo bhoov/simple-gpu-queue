@@ -10,7 +10,7 @@ setup(
     install_requires=requirements,
     author="Ben Hoover",
     author_email="benhoover34@gmail.com",
-    description="A simple queue for running GPU workloads in JAX",
+    description="Simple GPU Queue: For running lots of smaller experiments on your handful of GPUs, designed for JAX",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/bhoov/simple-gpu-queue",
@@ -19,5 +19,9 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.6",
+    entry_points={
+    'console_scripts': [
+        'simpleq_start=scripts:start_server',
+    ],
+    }, # Doesn't let me pass args. Bummer   python_requires=">=3.6",
 )
