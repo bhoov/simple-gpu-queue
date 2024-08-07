@@ -265,7 +265,7 @@ class GPUQueueClient:
         self.server_url = f"http://{GPU_SERVER_HOST}:{GPU_SERVER_PORT}"
         self.temp_dir = None
         self.setup_environment()
-        assert self.is_server_running(), f"""Server is not running. You can start the server by running `python gpu_command_queue.py NGPUS`"""
+        assert self.is_server_running(), f"""Server is not running. You can start the server by running `python simple_gpu_queue.py NGPUS`"""
 
 
     def setup_environment(self):

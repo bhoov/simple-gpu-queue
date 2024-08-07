@@ -1,5 +1,4 @@
-tyro
-fastapi[all]
-pytest
+tyro==0.8.5
+fastapi[all]==0.112.0
 gitpython
-requests
+requests==2.32.3
